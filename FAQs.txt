@@ -1,0 +1,441 @@
+<a id="faq"></a>	
+Frequently Asked Questions
+==========================
+
+##### Q)  How to debug no records (blank grid)?
+
+Few considerations before use 
+
+1)  include the jqgrid_dist.php file before any thing rendered to output.
+2)  Check the ajax response of grid,
+
+Use firefox->firebug->net->ajax-call of grid->response. You will see the output there, in case of any error. It should be proper JSON format data in order to render grid
+
+Review this tutorial for '[debugging with firebug](https://phpgrid.desk.com/customer/portal/articles/926266)'.
+
+
+##### Q)  How can I set the width in this grid, i do not want to set screen size width but custom width size
+
+You need to set following params:
+
+	$grid["autofilter"] = false;
+	$grid["width"] = "600"; // defaults to 900
+	...
+	$g->set_options($grid);
+
+If you dont specify the width property, it will be the sum of all columns width.
+
+##### Q) How can i integrate PHPGrid in MVC based frameworks like Yii, Codeignitor, Zend Framework, CakePHP and others.
+
+To integrate in MVC, You can divide code in 2 sections. And put first in controller and pass the $out variable to view, where you can render it with rest of JS/CSS files.
+
+CONTROLLER PART
+
+	include("inc/jqgrid_dist.php");
+	$g = new jqgrid();
+	.....
+	$out = $g->render("list1");
+
+VIEW PART
+
+	<link rel="stylesheet" type="text/css" media="screen" href="js/themes/redmond/jquery-ui.custom.css"></link> 
+	<link rel="stylesheet" type="text/css" media="screen" href="js/jqgrid/css/ui.jqgrid.css"></link> 
+
+	<script src="js/jquery.min.js" type="text/javascript"></script>
+	<script src="js/jqgrid/js/i18n/grid.locale-en.js" type="text/javascript"></script>
+	<script src="js/jqgrid/js/jquery.jqGrid.min.js" type="text/javascript"></script> 
+	<script src="js/themes/jquery-ui.custom.min.js" type="text/javascript"></script>
+
+	<div style="margin:10px">
+	<?php echo $out?>
+	</div>
+
+##### Q)  Change font size & height of cell
+
+Update following css classes to change presentation.
+
+	<style>
+	.ui-jqgrid {font-size:14px; font-family:"tahoma";}
+	.ui-jqgrid tr.jqgrow td {height: 25px; padding:0 5px;}
+	</style>
+
+##### Q)  How to do word-wrap content in grid cells?
+
+Update following css classes to change cell wrapping.
+
+	<style>
+	.ui-jqgrid tr.jqgrow td 
+	{
+	    vertical-align: top;
+	    white-space: normal;
+	}
+	</style>
+
+##### Q) How can i get IDs or Data of the selected rows of grid?
+
+On client side, you can have ids in this way, where "list1" is grid identifier.
+
+
+Returns null if no row is selected  (single row)
+
+	var selr = jQuery('#list1').jqGrid('getGridParam','selrow'); 
+
+Return array of id's of the selected rows when multiselect options is true. Empty array if not selection 
+
+	var selr = jQuery('#list1').jqGrid('getGridParam','selarrrow'); 
+
+Return data of passed row and col, where invdate is column name
+
+	var rd = jQuery('#list1').jqGrid('getCell', selr, 'invdate'); 
+
+##### Q) How can i set the width of 'Actions' column?
+
+You can also customize the width of that column,
+
+	# Customization of Action column width and other properties
+	$col = array();
+	$col["title"] = "Action";
+	$col["name"] = "act";
+	$col["width"] = "50";
+	$cols[] = $col;
+
+This work when you define grid columns manually and pass to this function.
+Otherwise, it will distribute all columns with equal width.
+
+	// pass the cooked columns to grid
+	$g->set_columns($cols);
+
+##### Q) How can i use custom data formatter with column?
+
+You can use it in following manner, e.g.
+
+in php code ...
+
+	$col = array();
+	$col["title"] = "Closed";
+	$col["name"] = "closed";
+	$col["width"] = "50";
+	$col["editable"] = true;
+	$col["edittype"] = "checkbox"; // render as checkbox
+	$col["editoptions"] = array("value"=>"1:0"); // with these values "checked_value:unchecked_value"
+	$col["formatter"] = "function(cellvalue, options, rowObject){ return cboxFormatter(cellvalue, options, rowObject);}";
+
+and in html ...
+
+	<script>
+	function cboxFormatter(cellvalue, options, rowObject)
+	{
+		return '<input type="checkbox" name="itemid[]" value="'+options.rowId+'" onclick="test('+options.rowId+',this.checked);"/> '+cellvalue;
+	}
+	</script>
+	<div style="margin:10px">
+	<?php echo $out?>
+	</div>
+
+In custom formatter, rowObject[0] contains first cell data and so on, we can also use some JS based ajax calling on current row.
+
+##### Q) How to load grid based on $_POST data from other page?
+
+The grid is loaded with 2 server calls.
+
+1) load the columns of grid.
+2) do an ajax call, to load data of grid.
+
+Now, if you want to pass data from external form, it is available for step1. But not there in 2nd ajax call, as it is not posted.
+Solution is to put the POST variable in session and use it from session for step2.
+
+e.g.
+
+	if (!empty($_POST["personid"]))
+	$_SESSION["personid"] = $_POST["personid"];
+
+and use $_SESSION["personid"] in your SQL.
+
+##### Q) For SQL Server demos, I get "mssqlnative extension not installed".  Where do I get that extension so I can view that Demo?
+
+Here is link from MS SQL Server website.
+[http://www.microsoft.com/en-us/download/details.aspx?id=20098](http://www.microsoft.com/en-us/download/details.aspx?id=20098)
+
+You need to enable the extension in php after installation.
+ 
+##### Q) How can i add caption along with icons of add,edit,delete.
+
+You need to put following additional JS and CSS code. You can change 'Add User' with your desired caption.
+
+	<script type="text/javascript">    
+	$.jgrid.nav.addtext = "Add User";
+	$.jgrid.nav.edittext = "Edit User";
+	$.jgrid.nav.deltext = "Delete User";
+	</script>
+
+After adding captions, the alignment got it out, so put this css.
+
+	<style type="text/css">
+	.ui-jqgrid .ui-jqgrid-pager .ui-pg-div 
+	{
+	    float: left;
+	    line-height: 18px;
+	    padding: 2px 2px 2px 0;
+	    position: relative;
+	}
+	</style>
+
+##### Q) How can i show lookup dropdown from other table (i.e. linked with FK data)
+
+First step is to select the data which you want to display in grid, which will include table join.
+Important thing here is to alias that data with FK field name.
+
+	// select query with FK_data as FK_id, e.g. clients.name as client_id
+	$g->select_command = "SELECT id, invdate, clients.name as client_id, amount, note FROM invheader 
+							INNER JOIN clients on clients.client_id = invheader.client_id
+							";
+
+After that, you need to define column like this.
+
+	$col = array();
+	$col["title"] = "Client";
+	$col["name"] = "client_id"; // same as aliased name (fk)
+	$col["dbname"] = "clients.name"; // this is required as we need to search in name field, not id
+	...
+	$col["edittype"] = "select"; // render as select
+
+	# fetch data from database, with alias k for key, v for value
+	$str = $g->get_dropdown_values("select distinct client_id as k, name as v from clients");
+	$col["editoptions"] = array("value"=>$str); 
+
+	$cols[] = $col;
+
+Refer dropdown.php for working demo.
+
+##### Q) How to dynamically change detail grid's dropdown field content, based on selection of master grid row?
+
+Step1: In master-detail.php, we added a dropdown in detail grid, with daraUrl param set to a php page.
+
+	$col = array();
+	$col["title"] = "Client";
+	$col["name"] = "client_id";
+	$col["width"] = "100";
+	$col["align"] = "left";
+	$col["search"] = true;
+	$col["editable"] = true;
+	$col["edittype"] = "select"; // render as select
+	$col["editoptions"] = array("dataUrl"=>"http://jqgrid/dev/build-select.php"); 
+	$cols[] = $col;
+
+Put build-select.php in some web access path, and set correct http url.
+and, we also set the master grid selection id into session variable.
+
+	$id = intval($_GET["rowid"]);
+	if ($id > 0)
+		$_SESSION["rowid"] = $_GET["rowid"];
+
+Step2: In build-select.php, we read the session variable and show the dropdown select based on that variable data.
+
+	<?
+	if (!isset($_SESSION) || !is_array($_SESSION))
+		session_start();
+
+	if ($_SESSION["rowid"] == "1") {
+	?>
+		<select> 
+		<option value='1'>One</option> 
+		<option value='2'>Two</option> 
+		</select>
+	<?
+	}
+	else {
+	?>
+		<select> 
+		<option value='3'>Three</option> 
+		<option value='4'>Four</option> 
+		</select>
+	<?
+	}
+
+##### Q) How to use table with composite keys index?
+
+For composite keys - there are two possible approaches:
+
+1) Creating a new AUTO_INCREMENT column directly in the database, so that each row has a unique id, then using this colunm for primary key. You can hide the column using hidden => true.
+
+2) In your SELECT statement (select_command), you may try to select a first column as special concat value that is based on composite keys. This will handle the listings. For updates, you need to manually manage on_update or on_insert code using custom events.
+
+##### Q) How to bind Javascript events with controls e.g. textbox?
+
+You can set them using editoptions
+
+	$col = array();
+	$col["title"] = "Name"; // caption of column
+	...
+	$col["editoptions"] = array("onchange"=>"value=this.value.toUpperCase()");
+	$cols[] = $col;	
+
+##### Q) How to use mysqli extension?
+
+Here is the config settings.
+
+	$db_conf = array();
+	$db_conf["type"] = "mysqli";
+	$db_conf["server"] = "localhost"; // or you mysql ip
+	$db_conf["user"] = "root"; // username
+	$db_conf["password"] = "test"; // password
+	$db_conf["database"] = "griddemo"; // database
+			 
+	// include and create object
+	$base_path = strstr(realpath("."),"demos",true)."lib/";
+	include($base_path."inc/jqgrid_dist.php");
+	$g = new jqgrid($db_conf);
+
+After that, all calls will use mysqli extension.
+
+##### Q) I need send POST with checked row to another file.
+
+You can have this work in javascript.
+
+	// returns null if no row is selected OR id of row (single row)
+	var selr = jQuery('#list1').jqGrid('getGridParam','selrow'); 
+
+	// return array of id's of the selected rows when multiselect options is true. Empty array if not selection 
+	var selr = jQuery('#list1').jqGrid('getGridParam','selarrrow'); 
+
+You can get selected IDs from above functions (where list1 is grid ID) and pass to other page using JS code.
+
+##### Q) How to integrate autocomplete function?
+
+Step1: Select ID and Data both in select command. (e.g. client_id, clients.name)
+
+	$g->select_command = "SELECT id, invdate, invheader.client_id, clients.name as cid, amount, note FROM invheader 
+	INNER JOIN clients on clients.client_id = invheader.client_id
+	";
+
+Step2: Place ID field in grid, editable but hidden.
+
+	// field that will be updated by autocomplete
+	$col = array();
+	$col["title"] = "client_id";
+	$col["name"] = "client_id"; 
+	$col["width"] = "10";
+	$col["editable"] = true;
+	$col["hidden"] = true;
+	$cols[] = $col;	
+
+Step3: Place DATA field in grid, with autocomplete formatter.
+
+	// normal textbox, with autocomplete enabled
+	$col = array();
+	$col["title"] = "Client";
+	$col["name"] = "cid";
+	$col["dbname"] = "clients.name"; // this is required as we need to search in name field, not id
+	$col["width"] = "100";
+	$col["align"] = "left";
+	$col["search"] = true;
+	$col["editable"] = true;
+	$col["formatter"] = "autocomplete"; // autocomplete
+	$col["formatoptions"] = array(	"sql"=>"SELECT client_id, name FROM clients",
+									"search_on"=>"name", 
+									"update_field" => "client_id");
+
+It will search in passed SQL for autocomplete, and selection ID will be set in field client_id.
+
+##### Q) How to set Multiline Column title for space flexibility?
+ 
+Sometimes the title is a bit too long. You can set column title/header with multiline text using linebreak, for example: 
+
+	$col["title"]="Total<br>Male";
+
+Additionally, you might need to use custom css for better display.
+
+	<style>
+	.ui-jqgrid .ui-jqgrid-htable th div 
+	{
+	    height: 25px;
+	    padding: 5px;
+	}
+	</style>
+
+Text Rotation could also be done using css.
+
+##### Q) How to enable footer summary row?
+
+Please do these changes to enable footer summary row.
+
+Step1: Enable footer row in options
+
+	$grid["footerrow"] = true;
+	...
+	$g->set_options($grid);
+
+Step2: Add custom JS code as mentioned. 'list1' is the identifier for grid. In function 'getCol', 2nd param 'field1' is the name of column, which will show the summary data. Valid options for mathoperation (4th param) are - 'sum, 'avg', 'count'.
+
+    <div style="margin:0px;">
+	<script>
+	var opts = {
+
+		'loadComplete': function () {
+		   	var grid = $("#list1"),
+		    sum = grid.jqGrid('getCol', 'field1', false, 'sum');
+			grid.jqGrid('footerData','set', {field1: 'Total: '+sum});
+		}
+	};
+	</script>
+
+    <?php echo $out?>
+    </div>
+
+##### Q) How to call custom javascript function on Add/Edit/Del button click?
+
+For instance, if you need custom edit button, You can remove default edit button by following config.
+
+	$g->set_actions(array(	
+							"add"=>false, // allow/disallow add
+							"edit"=>false, // allow/disallow edit
+							"delete"=>true, // allow/disallow delete
+							"rowactions"=>true, // show/hide row wise edit/del/save option
+							"export"=>true, // show/hide export to excel option
+							"autofilter" => true, // show/hide autofilter for search
+							"search" => "advance" // show single/multi field search condition (e.g. simple or advance)
+						) 
+					);
+
+And add your custom button using this JS (where list1 is grid id)
+
+	<script type="text/javascript">
+	/*
+		CUSTOM TOOLBAR BUTTON
+		---------------------
+		caption: (string) the caption of the button, can be a empty string.
+		buttonicon: (string) is the ui icon name from UI theme icon set. If this option is set to “none” only the text appear.
+		onClickButton: (function) action to be performed when a button is clicked. Default null.
+		position: (“first” or “last”) the position where the button will be added (i.e., before or after the standard buttons).
+		title: (string) a tooltip for the button.
+		cursor : string (default pointer) determines the cursor when we mouseover the element
+		id : string (optional) - if set defines the id of the button (actually the id of TD element) for future manipulation
+	*/
+	jQuery(document).ready(function(){
+		jQuery('#list1').jqGrid('navButtonAdd', '#list1_pager', 
+		{
+			'caption'      : '', 
+			'buttonicon'   : 'ui-icon-pencil', 
+			'onClickButton': function()
+			{
+				// your custom JS code ...
+				function redireciona() {window.location="cadastrar.php";}
+				redireciona();
+			},
+			'position': 'first'
+		});
+	});
+	</script>
+
+##### Q) What documentation is available with package?
+
+The documentation is one on web, then we have many working examples of almost all features  with inline commented docs. 
+If still there is an issue in understanding, live email and chat support and remote session support is also there.
+
+We also have a support center that provide resolution of many usual issues.
+
+##### Q) Is there any Refund Policy?
+
+You will also have 1 month of refund claim policy, which is actually very rare in our customers. Do consider one more fact, this is generic grid and provide customizations of user interface to an extent. Most of which are available in Demo Center. So if you are willing to do some major customization in features, ask before buying to save time.
+
+[^ Top](#top)
