@@ -27,5 +27,17 @@ class Home extends CI_Controller {
 		$this->load->helper(array('form','url'));
 		$session_data = $this->session->userdata('logged_in');
 		$this->load->view('pacs_view', $session_data);
-	}
+	}	
+	function analytics()
+	{
+		$this->load->helper(array('form','url'));
+		$session_data = $this->session->userdata('logged_in');
+		$this->load->view('pacs_view', $session_data);
+	}	
+	function report()
+	{
+		$this->load->helper(array('form','url'));
+		$session_data = $this->session->userdata('logged_in');
+		$this->load->view('pacs_view', $session_data);
+	}	
 }

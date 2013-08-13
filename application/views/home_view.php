@@ -1,9 +1,9 @@
 <?php 	$this->load->view('home/header');?>
     <div class="container">
-
+ 
       <!-- Main hero unit for a primary marketing message or call to action -->
       <div class="hero-unit">
-        <h1>朝阳医院-医学影像分析平台</h1>
+        <h1>朝阳医院-医学影像分析平台<?php echo $username;?></h1>
         <p>本平台是用于管理骨科类的医学影像数据资料，整理和分析影像资料数据，基于Web云端方式处理医学影像数据，并进行统计分析</p>
         <p><a href="#" class="btn btn-primary btn-large">更多信息 &raquo;</a></p>
       </div>
@@ -32,7 +32,10 @@
         </div>
       </div><!-- /row-->
 
-      
+		<script src="<?=base_url()?>bootstrap/js/jquery.js"></script>
+		<script src="<?=base_url()?>bootstrap/js/bootstrap.min.js"></script>
+	
+	  
 
       <footer>
         <p>&copy; 朝阳医院 2013</p>

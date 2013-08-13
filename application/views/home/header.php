@@ -39,22 +39,14 @@
           <a class="brand" href="#">医学影像分析平台</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li><a href="#">医学影像库</a></li>
-              <li class="active"><a href="#">病例研究</a></li>
-              <li class="dropdown" class="active">
-			  	<a href="#" class="dropdown-toggle" data-toggle="dropdown">统计分析<b class="caret"></b></a>
-			    <ul class="dropdown-menu">
-                  <li class="nav-header">关节分析结果</li>
-                  <li><a href="#">全膝关节解剖数据分析</a></li>
-                  <li><a href="#">全髋关节解剖数据分析</a></li>
-                  <li class="divider"></li>
-                  <li class="nav-header">脊柱分析结果</li>
-                  <li><a href="#">腰椎解剖数据分析</a></li>
-                  <li><a href="#">胸椎解剖数据分析</a></li>
-				  
-                </ul>
-			  </li>
-            </ul>
+              <li <?php if(current_url()==base_url()."index.php/home/pacs") echo "class='active'"?>><a href="/index.php/home/pacs">医学影像库</a></li>
+			  <?php if(isset($usertype)){  if($usertype != 'guest'){?>
+              <li <?php if(current_url()==base_url()."index.php/home/analytics") echo "class='active'"?>><a href="/index.php/home/analytics">病例研究</a></li>
+              <li <?php if(current_url()==base_url()."index.php/home/report") echo "class='active'"?>><a href="/index.php/home/report">分析报表</a></li>
+			  <?php  }if($usertype == 'admin'||$usertype == 'root'){?>
+              <li <?php if(current_url()==base_url()."index.php/dashboard") echo "class='active'"?>><a href="/index.php/dashboard">后台管理</a></li>
+			  <?php }}?>
+             </ul>
 			<?php if(isset($username)) {?>
 			<p class="navbar-text pull-right">
               欢迎访问 <?php 
@@ -82,7 +74,7 @@
 			<?php } else {?>
             <form class="navbar-form pull-right" action="/index.php/account/verifyaccount" method="post" accept-charset="utf-8">
               <input class="span2" type="text" placeholder="用户名" id="username" name="username" >	
-              <input class="span2" type="password" placeholder="密码" id="passowrd" name="password">
+              <input class="span2" type="password" placeholder="密码" id="password" name="password">
               <button type="submit" class="btn">登录</button>
               <button type="submit" class="btn" formaction="/index.php/account/signup">注册</button>
             </form>

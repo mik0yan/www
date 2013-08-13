@@ -127,7 +127,7 @@ if (!empty($_GET["file"]))
 									$fname = str_replace(".php","",$f);
 									$fname = str_replace("-"," ",$fname);
 									$fname = ucwords($fname);
-									echo "<a href='demos/$k/$f' onclick=\"jQuery('#code').load('index.php?file=/$k/$f'); $('#grid-demo-tabs a:first').tab('show');\" target='demo_frame'><i class='icon-chevron-right'></i> $fname </a><br/>";
+									echo "<a href='demos/$k/$f' onclick=\"jQuery('#code').load('index2.php?file=/$k/$f'); $('#grid-demo-tabs a:first').tab('show');\" target='demo_frame'><i class='icon-chevron-right'></i> $fname </a><br/>";
 								}
 								?>
 							</div>
@@ -192,7 +192,7 @@ if (!empty($_GET["file"]))
 			$(this).tab('show');
 			})
 			
-			jQuery('#code').load('index.php?file=/editing/index.php');
+			jQuery('#code').load('index2.php?file=/editing/index2.php');
 
 			function iframeLoaded(iFrameID) 
 			{
@@ -205,9 +205,11 @@ if (!empty($_GET["file"]))
 		</script>
       <footer>
         <p>&copy; <a href="http://www.phpgrid.org">www.phpgrid.org</a> <?php echo date("Y");?></p>
+		<pre>
+		<?php print_r($samples);?>
       </footer>
 
-    </div><!--/.fluid-container-->
+    </div><!--/.fluid-container-->c x  
 
 
   </body>

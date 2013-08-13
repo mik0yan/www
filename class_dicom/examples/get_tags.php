@@ -4,8 +4,8 @@
 #
 
 require_once('../class_dicom.php');
-
-$file = '31074716';
+define()
+$file = '16486136';
 
 if(!file_exists($file)) {
   print "$file: does not exist\n";
